@@ -23,8 +23,11 @@ public class ProgramDirectives {
 	ProgramDirectives(ProgramSource source, ShaderProperties properties, Set<Integer> supportedRenderTargets) {
 		// DRAWBUFFERS is only detected in the fragment shader source code (.fsh).
 		// If there's no explicit declaration, then by default /* DRAWBUFFERS:0 */ is inferred.
-		// TODO: ShadersMod appears to default to all buffers? Investigate this more closely.
-		// TODO: Use an immutable list
+		// For SEUS v08 and SEUS v10 to work, this will need to be set to 01234567. However, doing this causes
+		// TAA to break on Sildur's Vibrant Shaders, since gbuffers_skybasic lacks a DRAWBUFFERS directive, causing
+		// undefined data to be written to colortex7.
+		//
+		// TODO: Figure out how to infer the DRAWBUFFERS directive when it is missing.
 		drawBuffers = findDrawbuffersDirective(source.getFragmentSource()).orElse(new int[] { 0 });
 
 		if (properties != null) {
